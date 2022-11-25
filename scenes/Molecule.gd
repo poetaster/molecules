@@ -9,6 +9,11 @@ onready var area_node = $Area
 onready var area_shape = $Area/Shape
 onready var mesh = $Mesh
 
+# this is a hack for mobile
+onready var cam = utils.get_main_node().get_node("cam")
+onready var world = utils.get_main_node()
+onready var dim = cam.get_viewport_rect().size
+
 const MIN_PROPELLING_MASS = 0.0008
 const MAX_PROPELLING_MASS = 0.0016
 const SMALL_PROPELLING_FORCE = 150
@@ -24,6 +29,9 @@ var molecule_scene = load("res://scenes/Molecule.tscn")
 func _ready():
 	mesh.material = mesh.material.duplicate()
 	mesh.material.set_shader_param("offset", randf())
+	
+	var world = utils.get_main_node()
+	world.connect("touchTap", self, "_on_touchTap")
 	
 	shape.shape = CircleShape2D.new()
 	area_shape.shape = CircleShape2D.new()
@@ -96,9 +104,36 @@ func add_mass(added_mass: float, mass_linear_velocity: Vector2) -> void:
 
 
 func _physics_process(_delta):
-	if is_main and Input.is_action_pressed("propel"):
-		self.propel(get_viewport().get_mouse_position() - self.position)
+	pass
+	#if is_main and Input.is_action_pressed("propel"):
+	#	var p3 = event.position * dim
+		#self.propel(p3 - self.position)
+	#	self.propel(p3)
+	#	print(p3)
+		#self.propel(get_viewport().get_mouse_position() - self.position)
 
+func _on_touchTap(event):
+	#print('got it')
+	if is_main:
+		#var p3 = event.position * dim
+		#print(self.position * dim)
+		#print(p3)
+		self.propel(event.relative)
+	pass
+	
+func propel_me(_position):
+	self.propel(_position - self.position)
+	
+#func _input(event):
+#	#var label = Utils.get_main_node().get_node("HUD/uifb")
+#	if is_main and event is InputEventScreenDrag:
+#		var p3 = event.position * dim
+#		self.propel(event.relative)
+		#print(event.relative)
+
+		#self.propel(get_viewport().get_mouse_position() - self.position)
+		#print(event.relative)
+#		pass
 
 func _process(_delta):
 	var overlapping_molecules = []
