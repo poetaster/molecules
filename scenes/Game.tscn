@@ -2,7 +2,7 @@
 
 [ext_resource path="res://fonts/font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://scenes/Game.gd" type="Script" id=2]
-[ext_resource path="res://assets/sounds/ambient.ogg" type="AudioStream" id=3]
+[ext_resource path="res://assets/sounds/erokia__ambient-wave-69.ogg" type="AudioStream" id=3]
 [ext_resource path="res://scenes/MainMenu.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/Molecule.tscn" type="PackedScene" id=5]
 
@@ -16,18 +16,19 @@ script = ExtResource( 2 )
 [node name="cam" type="Camera2D" parent="."]
 
 [node name="Frame" type="Line2D" parent="."]
-position = Vector2( -64, 0 )
+position = Vector2( -40, 0 )
 scale = Vector2( 1.2, 1 )
 points = PoolVector2Array( 0, 0, 1280, 0, 1280, 720, 0, 720, 0, 0 )
 width = 4.0
 default_color = Color( 0, 0.6, 0.701961, 0.501961 )
 
 [node name="Walls" type="StaticBody2D" parent="."]
-position = Vector2( -64, 0 )
+position = Vector2( -48, 0 )
 scale = Vector2( 1.2, 1 )
 collision_layer = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls"]
+position = Vector2( 7.11111, 0 )
 shape = SubResource( 1 )
 
 [node name="Molecules" type="Node2D" parent="."]
@@ -107,7 +108,5 @@ margin_bottom = 718.662
 rect_min_size = Vector2( 1280, 720 )
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
-pause_mode = 2
 stream = ExtResource( 3 )
-volume_db = -8.893
 autoplay = true
