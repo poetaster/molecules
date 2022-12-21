@@ -113,27 +113,14 @@ func _physics_process(_delta):
 		#self.propel(get_viewport().get_mouse_position() - self.position)
 
 func _on_touchTap(event):
-	#print('got it')
 	if is_main:
-		#var p3 = event.position * dim
-		#print(self.position * dim)
-		#print(p3)
+		# using event.relative gets us a range
+		# of propulsion from drag direction
 		self.propel(event.relative)
 	pass
 	
 func propel_me(_position):
 	self.propel(_position - self.position)
-	
-#func _input(event):
-#	#var label = Utils.get_main_node().get_node("HUD/uifb")
-#	if is_main and event is InputEventScreenDrag:
-#		var p3 = event.position * dim
-#		self.propel(event.relative)
-		#print(event.relative)
-
-		#self.propel(get_viewport().get_mouse_position() - self.position)
-		#print(event.relative)
-#		pass
 
 func _process(_delta):
 	var overlapping_molecules = []

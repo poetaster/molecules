@@ -64,6 +64,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://plugins/GodotTouchInputManager/CustomInputEvents/InputEventSingleScreenTouch.gd"
 }, {
+"base": "Resource",
+"class": "Player",
+"language": "GDScript",
+"path": "res://scripts/player.gd"
+}, {
 "base": "InputEventAction",
 "class": "RawGesture",
 "language": "GDScript",
@@ -81,6 +86,7 @@ _global_script_class_icons={
 "InputEventSingleScreenSwipe": "",
 "InputEventSingleScreenTap": "",
 "InputEventSingleScreenTouch": "",
+"Player": "",
 "RawGesture": ""
 }
 
@@ -88,6 +94,8 @@ _global_script_class_icons={
 
 config/name="Molecules"
 run/main_scene="res://scenes/Game.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="harbour-molecules"
 config/icon="res://assets/images/icon.png"
 
 [autoload]
@@ -104,6 +112,7 @@ gdscript/warnings/return_value_discarded=false
 
 window/size/width=1405
 window/size/height=720
+window/size/resizable=false
 window/stretch/mode="2d"
 window/stretch/aspect="keep_width"
 

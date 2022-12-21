@@ -14,6 +14,10 @@ var screen_size = Vector2(
 var total_molecule_mass = 0
 var main_molecule
 var next_level = false
+var wins = 0
+var played = 0
+var player
+var best
 
 signal touchTap
 signal touchMtap
@@ -25,8 +29,14 @@ onready var dim = cam.get_viewport_rect().size
 
 func _ready():
 	set_process_input(true)
-	# Pause the game for tutorial
-	#get_tree().paused = true
+	# retrieve highscore
+	player = load_data('user://player.res')
+	if player.high_score > wins:
+				best = player.high_score
+	#game.connect("score_best_changed", self, "_on_score_best_changed")
+	# set_number(game.score_best)
+	print(player.high_score)
+	
 	randomize()
 	main_menu.connect("request_new_level", self, "generate_molecules")
 	main_menu.connect("request_music", self, "_on_request_music")
@@ -36,6 +46,7 @@ func _ready():
 		total_molecule_mass += molecule.molecule_mass
 	# In tutorial, ensure that the biggest molecule has to be absorbed too
 	#total_molecule_mass *= 1.5
+	next_level = true
 
 
 func _input(event):
@@ -56,14 +67,26 @@ func _input(event):
 			messages.text = ""
 			main_menu.hide()
 			get_tree().paused = false
+			
 	if event is InputEventMultiScreenTap:
 		#messages.text = "Multitap"
 		emit_signal('touchMtap', event)
 	if event is InputEventSingleScreenDrag:
 		#messages.text = "Singldrag"
 		emit_signal('touchTap', event)
+		
+		# we add some random motion the larger the
+		# main molecule gets. we limit selection
+		# to the number of wins.
+		randomize()
+		if wins > 3:
+			# select a random molecule
+			var rMolecule = molecules.get_child(randi()% wins)
+			if not rMolecule.is_main:
+				# a small delay so that main move
+				# and the other molecules aren't contemporary
+				rMolecule.propel(Vector2(rand_range(-1,1), rand_range(-1, 1)))
 		#main_molecule.propel(event.relative)
-		#print("ha")
 		
 
 
@@ -91,9 +114,8 @@ func generate_molecules():
 	molecules.add_child(main_molecule)
 	total_molecule_mass += main_molecule.molecule_mass
 	yield(utils.create_timer(2), "timeout")
-	next_level = true
-
 	
+	next_level = true
 
 
 func _generate_placeholder_molecules(main_molecule):
@@ -131,9 +153,11 @@ func _generate_single_molecule(radius, existing_molecules) -> Array:
 
 
 func _on_main_molecule_resized() -> void:
-	#print(total_molecule_mass - global.main_molecule.molecule_mass)
+
 	if global.main_molecule.radius <= 0:
 			messages.text = "You lost"
+			played+=1
+			save_score()
 			yield(utils.create_timer(1), "timeout")
 			messages.text = ""
 			#get_tree().paused = false
@@ -144,20 +168,55 @@ func _on_main_molecule_resized() -> void:
 	else:
 		if global.main_molecule.molecule_mass > total_molecule_mass * 0.5:
 			if next_level:
-				next_level = false
-				messages.text = "You won!"
-				yield(utils.create_timer(2), "timeout")
 				#get_tree().paused = false
 				#$MainMenu.show_menu()
+				next_level = false
+				# increase the wins register
+				# to start adding some random motion.
+				wins+=1
+				played+=1
+				save_score()
+				messages.set_text(str("You won! ", wins, " of ", played))
+				yield(utils.create_timer(2), "timeout")
+				player = load_data('user://player.res')
+				if player.high_score > 0:
+					messages.set_text(str("Best: ", player.high_score, " of ", player.played))
+					yield(utils.create_timer(2), "timeout")
+				
 				global.main_molecule.molecule_mass = 0
 				messages.text = ""
 				generate_molecules()
 				
 
-
-
 func _on_request_music(enabled: bool) -> void:
 	music.stream_paused = not enabled
 
+# score saving logic
+func _on_score_best_changed():
+		player = load_data('user://player.res')
+		if player.high_score > best:
+			best = player.high_score
+		else:
+			save_score()
+				
+func save_score():
+# we save state on this transition
+	var player = load_data('user://player.res')
+	var current_score = float(wins*100/played)
+	var highest = float(player.high_score*100 /player.played)
+	if ( current_score >= highest and played > player.played ) or player.high_score == 0:
+		print("write")
+		player.high_score = wins
+		player.played = played
+		var result = ResourceSaver.save('user://player.res', player)
+		#print(result)
+		assert(result == OK)
 
-
+func load_data(file_name):
+	if ResourceLoader.exists(file_name):
+		var player = ResourceLoader.load(file_name)
+		if player is Player: # Check that the data is valid
+			return player
+	else:
+		#print("now")
+		return Player.new()
