@@ -10,6 +10,12 @@ I've also modified the sound, as noted below, to make the game smaller.
 
 The game in this version features score saving and modifies the dynamics of the molecules as you advance in clearing stages.
 
+For mobile touch management I'm indebted to the work of:
+
+https://github.com/Federico-Ciuffardi/GodotTouchInputManager
+
+It is included as a submodule, here.
+
 # Original game
 
 The original authors: https://github.com/miskatonicstudio
