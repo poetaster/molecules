@@ -4,11 +4,20 @@
 
 A simple clone of Osmos, made with [Godot Engine](https://github.com/godotengine/godot).
 
+This fork is a mobile version, intially aimed at SailfishOs. It should work anywhere with a touch interface.
+
+I've also modified the sound, as noted below, to make the game smaller. 
+
+The game in this version features score saving and modifies the dynamics of the molecules as you advance in clearing stages.
+
+# Original game
+
+The original authors: https://github.com/miskatonicstudio
+
 The game can be downloaded from [itch.io](https://miskatonicstudio.itch.io/molecules).
 
 ## Sounds
-
-The game uses a public domain ambient sound from [Freesound](https://freesound.org/people/PhonZz/sounds/263467/).
+https://www.patreon.com/Erokia https://freesound.org/people/Erokia/sounds/641905/
 
 ## Fonts
 
